@@ -15,10 +15,11 @@ RUN dotnet publish backend/BibliotecaAPI.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
+# .NET 10 base image already ships with a non-root `app` user.
+# Install curl for healthcheck.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/* \
-    && groupadd -r app && useradd -r -g app app \
     && chown -R app:app /app
 
 USER app
