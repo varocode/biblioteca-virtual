@@ -59,6 +59,11 @@ services:
     command: tunnel --no-autoupdate run
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Configura CLOUDFLARE_TUNNEL_TOKEN en .env.prod}
+    # Forzamos DNS público porque el embebido de Docker a veces falla resolviendo *.argotunnel.com
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+      - 8.8.8.8
     depends_on:
       - frontend
       - backend
