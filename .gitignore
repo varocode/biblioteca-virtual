@@ -4,5 +4,10 @@ node_modules/
 dist/
 .env
 .env.local
+.env.prod
+.env.*.local
 playwright-report/
 test-results/
+.DS_Store
+.vscode/
+.idea/

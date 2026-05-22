@@ -1,0 +1,73 @@
+name: biblioteca-virtual
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: biblioteca-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-biblioteca_virtual}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env.prod}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-biblioteca_virtual}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - biblioteca_postgres_data:/var/lib/postgresql/data
+    networks:
+      - biblioteca
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: biblioteca-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-biblioteca_virtual};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
+      Jwt__Key: ${JWT_KEY:?Configura JWT_KEY en .env.prod (mínimo 32 caracteres)}
+      Jwt__Issuer: ${JWT_ISSUER:-BibliotecaVirtual}
+      Jwt__Audience: ${JWT_AUDIENCE:-BibliotecaVirtualUsers}
+      Jwt__ExpirationHours: "8"
+      Cors__AllowedOrigins__0: ${FRONTEND_URL:?Configura FRONTEND_URL en .env.prod}
+    networks:
+      - biblioteca
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:?Configura VITE_API_BASE_URL en .env.prod}
+    container_name: biblioteca-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - biblioteca
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: biblioteca-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Configura CLOUDFLARE_TUNNEL_TOKEN en .env.prod}
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - biblioteca
+
+volumes:
+  biblioteca_postgres_data:
+
+networks:
+  biblioteca:
+    driver: bridge

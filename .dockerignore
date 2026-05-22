@@ -1,0 +1,14 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/.git
+**/.env
+**/.env.local
+**/.env.prod
+**/playwright-report
+**/test-results
+**/.vscode
+**/.idea
+**/*.md
+!**/README.md
