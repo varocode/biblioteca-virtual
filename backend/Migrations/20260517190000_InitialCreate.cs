@@ -44,7 +44,7 @@ public partial class InitialCreate : Migration
                 Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                 PasswordHash = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                Rol = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Lector"),
+                Rol = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 FechaRegistro = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 Activo = table.Column<bool>(type: "boolean", nullable: false),
                 Telefono = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
@@ -88,7 +88,7 @@ public partial class InitialCreate : Migration
                 FechaPrestamo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 FechaDevolucionEsperada = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 FechaDevolucionReal = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Activo"),
+                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 Observaciones = table.Column<string>(type: "text", nullable: true)
             },
             constraints: table =>
@@ -108,7 +108,7 @@ public partial class InitialCreate : Migration
                 FechaReserva = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 FechaExpiracion = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                 PosicionCola = table.Column<int>(type: "integer", nullable: false),
-                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Activa")
+                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
             },
             constraints: table =>
             {
@@ -126,7 +126,7 @@ public partial class InitialCreate : Migration
                 PrestamoId = table.Column<int>(type: "integer", nullable: false),
                 Monto = table.Column<decimal>(type: "numeric(10,2)", precision: 10, scale: 2, nullable: false),
                 DiasRetraso = table.Column<int>(type: "integer", nullable: false),
-                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Pendiente"),
+                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 FechaGeneracion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 FechaPago = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
             },

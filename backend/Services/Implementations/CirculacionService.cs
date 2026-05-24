@@ -67,6 +67,7 @@ public class CirculacionService(BibliotecaContext context) : ICirculacionService
         context.Prestamos.Add(prestamo);
         AgregarAuditoria(usuarioId, "prestamo.solicitar", "Prestamo", "pendiente", "Solicitud de préstamo creada.");
         AgregarNotificacion(usuarioId, TipoNotificacion.Prestamo, "Solicitud registrada", "Tu solicitud de préstamo quedó pendiente de aprobación por biblioteca.", $"prestamo:{request.LibroId}");
+        await NotificarAdminsAsync(TipoNotificacion.Prestamo, "Nueva solicitud de préstamo", $"{usuario.Nombre} solicitó un préstamo. Revisa Circulación para aprobarlo.", $"prestamo:{request.LibroId}");
         await context.SaveChangesAsync();
         return (await ObtenerPrestamoDtoAsync(prestamo.Id))!;
     }
@@ -440,4 +441,16 @@ public class CirculacionService(BibliotecaContext context) : ICirculacionService
     private void AgregarAuditoria(int? actorUsuarioId, string accion, string entidad, string entidadId, string resultado, string? detalle = null) => context.AuditEvents.Add(new AuditEvent { ActorUsuarioId = actorUsuarioId, Accion = accion, Entidad = entidad, EntidadId = entidadId, Resultado = resultado, Detalle = detalle });
 
     private void AgregarNotificacion(int usuarioId, TipoNotificacion tipo, string titulo, string mensaje, string? referencia = null) => context.Notificaciones.Add(new Notificacion { UsuarioId = usuarioId, Tipo = tipo, Titulo = titulo, Mensaje = mensaje, Referencia = referencia });
+
+    private async Task NotificarAdminsAsync(TipoNotificacion tipo, string titulo, string mensaje, string? referencia = null)
+    {
+        var adminIds = await context.Usuarios
+            .Where(usuario => usuario.Rol == RolUsuario.Administrador && usuario.Activo)
+            .Select(usuario => usuario.Id)
+            .ToListAsync();
+        foreach (var adminId in adminIds)
+        {
+            AgregarNotificacion(adminId, tipo, titulo, mensaje, referencia);
+        }
+    }
 }

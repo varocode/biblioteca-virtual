@@ -20,8 +20,8 @@ public partial class AddEjemplaresInventory : Migration
             {
                 Id = table.Column<int>(type: "integer", nullable: false).Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                 Codigo = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Disponible"),
-                Tipo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Fisico"),
+                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                Tipo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 Ubicacion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                 FechaRegistro = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 LibroId = table.Column<int>(type: "integer", nullable: false)

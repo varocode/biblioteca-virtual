@@ -48,7 +48,7 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
             entity.Property(usuario => usuario.Nombre).HasMaxLength(100).IsRequired();
             entity.Property(usuario => usuario.Email).HasMaxLength(150).IsRequired();
             entity.Property(usuario => usuario.PasswordHash).HasMaxLength(255).IsRequired();
-            entity.Property(usuario => usuario.Rol).HasConversion<string>().HasMaxLength(20).HasDefaultValue(RolUsuario.Lector);
+            entity.Property(usuario => usuario.Rol).HasConversion<string>().HasMaxLength(20);
             entity.Property(usuario => usuario.Telefono).HasMaxLength(20);
             entity.Property(usuario => usuario.Direccion).HasMaxLength(255);
         });
@@ -91,8 +91,8 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
             entity.HasIndex(ejemplar => ejemplar.Codigo).IsUnique();
             entity.HasIndex(ejemplar => new { ejemplar.LibroId, ejemplar.Estado });
             entity.Property(ejemplar => ejemplar.Codigo).HasMaxLength(50).IsRequired();
-            entity.Property(ejemplar => ejemplar.Estado).HasConversion<string>().HasMaxLength(20).HasDefaultValue(EstadoEjemplar.Disponible);
-            entity.Property(ejemplar => ejemplar.Tipo).HasConversion<string>().HasMaxLength(20).HasDefaultValue(TipoEjemplar.Fisico);
+            entity.Property(ejemplar => ejemplar.Estado).HasConversion<string>().HasMaxLength(20);
+            entity.Property(ejemplar => ejemplar.Tipo).HasConversion<string>().HasMaxLength(20);
             entity.Property(ejemplar => ejemplar.Ubicacion).HasMaxLength(100);
         });
     }
@@ -102,7 +102,7 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
         modelBuilder.Entity<Prestamo>(entity =>
         {
             entity.ToTable("prestamos");
-            entity.Property(prestamo => prestamo.Estado).HasConversion<string>().HasMaxLength(20).HasDefaultValue(EstadoPrestamo.Activo);
+            entity.Property(prestamo => prestamo.Estado).HasConversion<string>().HasMaxLength(20);
             entity.HasOne(prestamo => prestamo.Ejemplar).WithMany(ejemplar => ejemplar.Prestamos).HasForeignKey(prestamo => prestamo.EjemplarId).OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -110,7 +110,7 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
         {
             entity.ToTable("reservas");
             entity.HasIndex(reserva => new { reserva.LibroId, reserva.Estado, reserva.PosicionCola });
-            entity.Property(reserva => reserva.Estado).HasConversion<string>().HasMaxLength(20).HasDefaultValue(EstadoReserva.Activa);
+            entity.Property(reserva => reserva.Estado).HasConversion<string>().HasMaxLength(20);
             entity.HasOne(reserva => reserva.Ejemplar).WithMany(ejemplar => ejemplar.Reservas).HasForeignKey(reserva => reserva.EjemplarId).OnDelete(DeleteBehavior.SetNull);
         });
 
@@ -119,7 +119,7 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
             entity.ToTable("multas");
             entity.HasIndex(multa => multa.PrestamoId).IsUnique();
             entity.Property(multa => multa.Monto).HasPrecision(10, 2);
-            entity.Property(multa => multa.Estado).HasConversion<string>().HasMaxLength(20).HasDefaultValue(EstadoMulta.Pendiente);
+            entity.Property(multa => multa.Estado).HasConversion<string>().HasMaxLength(20);
             entity.ToTable(tabla =>
             {
                 tabla.HasCheckConstraint("ck_multas_monto_no_negativo", "\"Monto\" >= 0");
@@ -133,7 +133,7 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
             entity.HasIndex(intento => intento.Referencia).IsUnique();
             entity.HasIndex(intento => new { intento.MultaId, intento.Estado });
             entity.Property(intento => intento.Monto).HasPrecision(10, 2);
-            entity.Property(intento => intento.Estado).HasConversion<string>().HasMaxLength(20).HasDefaultValue(EstadoIntentoPago.Creado);
+            entity.Property(intento => intento.Estado).HasConversion<string>().HasMaxLength(20);
             entity.Property(intento => intento.Referencia).HasMaxLength(80).IsRequired();
             entity.Property(intento => intento.MotivoRechazo).HasMaxLength(200);
         });
@@ -165,7 +165,7 @@ public class BibliotecaContext(DbContextOptions<BibliotecaContext> options) : Db
         {
             entity.ToTable("notificaciones");
             entity.HasIndex(notificacion => new { notificacion.UsuarioId, notificacion.Fecha });
-            entity.Property(notificacion => notificacion.Tipo).HasConversion<string>().HasMaxLength(20).HasDefaultValue(TipoNotificacion.Prestamo);
+            entity.Property(notificacion => notificacion.Tipo).HasConversion<string>().HasMaxLength(20);
             entity.Property(notificacion => notificacion.Titulo).HasMaxLength(120).IsRequired();
             entity.Property(notificacion => notificacion.Mensaje).HasMaxLength(500).IsRequired();
             entity.Property(notificacion => notificacion.Referencia).HasMaxLength(80);

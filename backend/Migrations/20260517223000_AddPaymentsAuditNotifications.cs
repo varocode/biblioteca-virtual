@@ -41,7 +41,7 @@ public partial class AddPaymentsAuditNotifications : Migration
                 MultaId = table.Column<int>(type: "integer", nullable: false),
                 UsuarioId = table.Column<int>(type: "integer", nullable: false),
                 Monto = table.Column<decimal>(type: "numeric(10,2)", precision: 10, scale: 2, nullable: false),
-                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Creado"),
+                Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 Referencia = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
                 MotivoRechazo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                 FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -60,7 +60,7 @@ public partial class AddPaymentsAuditNotifications : Migration
             {
                 Id = table.Column<int>(type: "integer", nullable: false).Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                 UsuarioId = table.Column<int>(type: "integer", nullable: false),
-                Tipo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Prestamo"),
+                Tipo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                 Titulo = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                 Mensaje = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                 Referencia = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: true),

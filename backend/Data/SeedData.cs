@@ -138,7 +138,10 @@ public static class SeedData
                 libro.Ejemplares.Add(new Ejemplar
                 {
                     Codigo = $"{libro.Isbn}-{indice:D3}",
-                    Estado = indice <= libro.Disponibles ? EstadoEjemplar.Disponible : EstadoEjemplar.Prestado,
+                    // Todos arrancan disponibles. Los préstamos reales (CrearPrestamo)
+                    // son lo único que marca un ejemplar como Prestado, así el inventario
+                    // siempre coincide con la circulación.
+                    Estado = EstadoEjemplar.Disponible,
                     Tipo = indice == libro.Stock && libro.Stock > 3 ? TipoEjemplar.Digital : TipoEjemplar.Fisico,
                     Ubicacion = $"Estante {((indice - 1) % 5) + 1}"
                 });
@@ -148,13 +151,14 @@ public static class SeedData
 
     private static Prestamo CrearPrestamo(Usuario usuario, Libro libro, DateTime fechaPrestamo, DateTime fechaEsperada, EstadoPrestamo estado, DateTime? fechaReal = null)
     {
-        var ejemplar = estado == EstadoPrestamo.Devuelto
-            ? libro.Ejemplares.FirstOrDefault(ejemplar => ejemplar.Estado == EstadoEjemplar.Disponible)
-            : libro.Ejemplares.FirstOrDefault(ejemplar => ejemplar.Estado != EstadoEjemplar.Disponible) ?? libro.Ejemplares.First();
+        // Tomamos el primer ejemplar disponible. Para préstamos activos/vencidos
+        // lo marcamos Prestado; para devueltos queda disponible (solo guarda historial).
+        var ejemplar = libro.Ejemplares.FirstOrDefault(ejemplar => ejemplar.Estado == EstadoEjemplar.Disponible)
+            ?? libro.Ejemplares.First();
 
         if (estado is EstadoPrestamo.Activo or EstadoPrestamo.Vencido)
         {
-            ejemplar!.Estado = EstadoEjemplar.Prestado;
+            ejemplar.Estado = EstadoEjemplar.Prestado;
         }
 
         return new Prestamo
